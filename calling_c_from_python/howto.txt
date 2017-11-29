@@ -1,0 +1,49 @@
+The quickest way to do this is using SWIG.
+
+Example from SWIG tutorial:
+
+---
+/* File : example.c */
+int fact(int n) {
+        if (n <= 1) return 1;
+            else return n*fact(n-1);
+}
+---
+
+Interface file:
+
+---
+/* example.i */
+%module example
+%{
+    /* Put header files here or function declarations like below */
+extern int fact(int n);
+%}
+
+extern int fact(int n);
+---
+
+Building a Python module on Unix:
+
+---
+swig -python example.i
+gcc -fPIC -c example.c example_wrap.c -I/usr/local/include/python2.7
+gcc -shared example.o example_wrap.o -o _example.so
+---
+
+Usage:
+
+---
+>>> import example
+>>> example.fact(5)
+120
+---
+
+Note that you have to have python-dev.
+Also in some systems python header files will be in /usr/include/python2.7 based on the way you have installed it.
+
+From the tutorial:
+
+SWIG is a fairly complete C++ compiler with support for nearly every language feature.
+This includes preprocessing, pointers, classes, inheritance, and even C++ templates.
+SWIG can also be used to package structures and classes into proxy classes in the target language — exposing the underlying functionality in a very natural manner.
